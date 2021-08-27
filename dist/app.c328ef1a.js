@@ -118,7 +118,11 @@ parcelRequire = (function (modules, cache, entry, globalName) {
 
   return newRequire;
 })({"app.js":[function(require,module,exports) {
+var ajax = new XMLHttpRequest();
+ajax.open("GET", "https://api.hnpwa.com/v0/news/1.json", false); //true: 비동기적으로 가져온다 false: 동기적으로 수행한다
 
+ajax.send();
+console.log(ajax.response);
 },{}],"../../AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
