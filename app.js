@@ -12,35 +12,50 @@ function getData(url) {
   return JSON.parse(ajax.response);
 }
 
-const newsFeed = getData(NEWS_URL);
-const ul = document.createElement("ul");
+function newsFeed() {
+  const newsFeed = getData(NEWS_URL);
+  const newsList = [];
 
-window.addEventListener("hashchange", function () {
-  // 제목을 클릭 할 때마다 해시 값이 바껴 haschange 함수가 호출된다. -> 내용 화면으로 진입하는 시점(hashchange)
-  const id = location.hash.substr(1); //주소와 관련된 정보 제공, substr: () 안의 값 이후부터 끝가지 문자열 출력
+  newsList.push("<ul>");
 
-  const newsContent = getData(CONTENT_URL.replace("@id", id));
-
-  container.innerHTML = `
-    <h1>${newsContent.title}</h1>
-
-    <div>
-        <A href="#">목록으로</a>
-    </div>
-  `;
-});
-
-const newsList = [];
-
-newsList.push("<ul>");
-
-for (let i = 0; i < 10; i++) {
-  newsList.push(`<li><a href = "#${newsFeed[i].id}">
+  for (let i = 0; i < 10; i++) {
+    newsList.push(`<li><a href = "#${newsFeed[i].id}">
         ${newsFeed[i].title}  [${newsFeed[i].comments_count}]  
       </a>
     </li>`);
+  }
+
+  newsList.push("</ul>");
+  container.innerHTML = newsList.join("");
 }
 
-newsList.push("</ul>");
+const ul = document.createElement("ul");
 
-container.innerHTML = newsList.join("");
+function newsDetail() {
+  // 제목을 클릭 할 때마다 해시 값이 바껴 haschange 함수가 호출된다. -> 내용 화면으로 진입하는 시점(hashchange)
+  const id = location.hash.substr(1); //주소와 관련된 정보 제공, substr: () 안의 값 이후부터 끝가지 문자열 출력
+  const newsContent = getData(CONTENT_URL.replace("@id", id));
+
+  container.innerHTML = `
+      <h1>${newsContent.title}</h1>
+  
+      <div>
+          <A href="#">목록으로</a>
+      </div>
+    `;
+}
+
+function router() {
+  //location.hash를 통해 지금 보고있는 화면의 위치 해시값을 받아 목록을 보여줄지 내용을 보여줄지 정한다.
+  const routePath = location.hash;
+
+  if (routePath === "") {
+    newsFeed(); //routePath 값에 #만 있는 경우 빈 문자열을 출력한다.
+  } else {
+    newsDetail();
+  }
+}
+
+window.addEventListener("hashchange", router); //hash값을 받아 알맞는 라우터를 찾고 보여줄 화면을 지정한다
+
+router();
