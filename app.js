@@ -3,6 +3,9 @@ const ajax = new XMLHttpRequest();
 const content = document.createElement("div");
 const NEWS_URL = "https://api.hnpwa.com/v0/news/1.json"; // 해커 뉴스 news 1페이지
 const CONTENT_URL = "https://api.hnpwa.com/v0/item/@id.json"; // @id를 통해 뉴스 기사 고유의 id를 파악해 해당 뉴스 기사의 json을 가져온다
+const store = {
+  currentPage: 1,
+};
 
 function getData(url) {
   // 데이터를 가져오는 함수 생성
@@ -18,14 +21,20 @@ function newsFeed() {
 
   newsList.push("<ul>");
 
-  for (let i = 0; i < 10; i++) {
-    newsList.push(`<li><a href = "#${newsFeed[i].id}">
+  for (let i = (store.currentPage - 1) * 10; i < store.currentPage * 10; i++) {
+    newsList.push(`<li><a href = "#/show/${newsFeed[i].id}">
         ${newsFeed[i].title}  [${newsFeed[i].comments_count}]  
       </a>
     </li>`);
   }
 
   newsList.push("</ul>");
+  newsList.push(`
+    <div>
+        <a href="#/page/${store.currentPage - 1}">이전 페이지</a>
+        <a href="#/page/${store.currentPage + 1}">다음 페이지</a>
+    </div>
+  `);
   container.innerHTML = newsList.join("");
 }
 
@@ -51,6 +60,9 @@ function router() {
 
   if (routePath === "") {
     newsFeed(); //routePath 값에 #만 있는 경우 빈 문자열을 출력한다.
+  } else if (routePath.indexOf("#/page/") >= 0) {
+    store.currentPage = Number(routePath.substr(7));
+    newsFeed();
   } else {
     newsDetail();
   }
