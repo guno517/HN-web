@@ -25,13 +25,16 @@ function newsFeed() {
     newsList.push(`<li><a href = "#/show/${newsFeed[i].id}">
         ${newsFeed[i].title}  [${newsFeed[i].comments_count}]  
       </a>
-    </li>`);
+    </li>
+    `);
   }
 
   newsList.push("</ul>");
   newsList.push(`
     <div>
-        <a href="#/page/${store.currentPage - 1}">이전 페이지</a>
+        <a href="#/page/${
+          store.currentPage > 1 ? store.currentPage - 1 : 1 // 삼항 연산자를 이용해 1페이지 이하, 0페이지를 보여주지 않는 방어 코드 작성
+        }">이전 페이지</a>
         <a href="#/page/${store.currentPage + 1}">다음 페이지</a>
     </div>
   `);
@@ -42,14 +45,14 @@ const ul = document.createElement("ul");
 
 function newsDetail() {
   // 제목을 클릭 할 때마다 해시 값이 바껴 haschange 함수가 호출된다. -> 내용 화면으로 진입하는 시점(hashchange)
-  const id = location.hash.substr(1); //주소와 관련된 정보 제공, substr: () 안의 값 이후부터 끝가지 문자열 출력
+  const id = location.hash.substr(7); //주소와 관련된 정보 제공, substr: () 안의 값 이후부터 끝가지 문자열 출력
   const newsContent = getData(CONTENT_URL.replace("@id", id));
 
   container.innerHTML = `
       <h1>${newsContent.title}</h1>
   
       <div>
-          <A href="#">목록으로</a>
+          <A href="#/page/${store.currentPage}">목록으로</a>
       </div>
     `;
 }
