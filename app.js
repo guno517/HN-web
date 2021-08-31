@@ -127,7 +127,13 @@ function newsDetail() {
           <p class="text-gray-700">${comments[i].content}</p>
         </div>   
           `);
+
+      if (comments[i].comments.length > 0) {
+        commentString.push(makeComment(comments[i].comments, called + 1)); // 재귀함수를 사용해서 대댓글 기능 구현(끝을 알 수 없는 구조에서 유용)
+        // 댓글이 몇번 호출 되었는지 체크하여 대댓글의 UI를 바꾼다(윗 댓글보다 padding이 더 들어가도록)
+      }
     }
+
     return commentString.join("");
   }
 
